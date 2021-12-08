@@ -1,0 +1,6 @@
+{
+    "values": [
+        "txqueue:core/load",
+        "waitatick:core/load"
+    ]
+}
