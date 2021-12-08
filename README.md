@@ -1,0 +1,2 @@
+# waitAtick
+storageの値だけtickが経った後にファンクションを起動する。動的scheduleデータパックライブラリ
