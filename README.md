@@ -1,5 +1,21 @@
 # waitAtick
 schedule後にstorageのデータを持ち越せる、動的scheduleデータパックライブラリ
+schedule後も実行者・実行位置schedule後も実行位置が変わらないようにもできる
+
+### example
+2つの例が同梱されている
+```mcfunction
+# 静的スケジュールのテスト
+# 待機時間は10tick固定
+# 待機後にexample:static_callbackが呼ばれ、実行者にアイテムが渡される
+function example:static_example
+```
+```mcfunction
+# 動的スケジュールのテスト
+# ファンクションの中身を書き換えると待機時間を変更できる
+# 待機後にexample:dynaimc_callbackが呼ばれ、実行位置にブロックが設置される
+function example:dynamic_example
+```
 
 #### 静的schedule
 決められた値だけtickが経った後にファンクションタグを起動する
@@ -45,10 +61,10 @@ main.py
 from waitatick import waitAtickDynamic, waitAtickStatic
 
 ### dynamic_exスケジュールの作成
-# スケジュール名、待機後に実行する関数のリストを引数に取る
-waitAtickDynamic('dynamic_ex',["example:dynamic_callback"])
+# スケジュール名、待機後に実行する関数のリスト、実行者を引き継ぐか、実行位置を引き継ぐかを引数に取る
+waitAtickDynamic('dynamic_ex',["example:dynamic_callback"],False,True)
 
 ### static_exスケジュールの作成
-# スケジュール名、待機時間(チック)、待機後に実行する関数のリストを引数に取る
-waitAtickStatic('static_ex',10,["example:static_callback"])
+# スケジュール名、待機時間(チック)、待機後に実行する関数のリスト、実行者を引き継ぐか、実行位置を引き継ぐかを引数に取る
+waitAtickStatic('static_ex',10,["example:static_callback"],True)
 ```
