@@ -22,7 +22,7 @@ TAG_PATH.mkdir()
 shutil.rmtree(API_PATH,ignore_errors = True)
 API_PATH.mkdir()
 
-def _waitAtick(name:str,tick:Optional[int],callbacks:list[str]=[]):
+def _waitAtick(name:str,tick:Optional[int],callbacks:list[str]=[],save_executer:bool = False):
   appendFunc = f'''#> waitatick:core/_/{name}/append
 # @internal
 
