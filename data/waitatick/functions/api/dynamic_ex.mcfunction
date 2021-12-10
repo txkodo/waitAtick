@@ -1,12 +1,12 @@
 #> waitatick:api/dynamic_ex
 # 
-# @input storage waitatick: tick 待機時間 (int)
-# @input storage waitatick: IO.data ストレージに待機後に使いたいデータを入れておく
+# @input score $tick waitatick 待機後tick
+# @input storage waitatick: IO ストレージに待機後に使いたいデータを入れておく
 # 
-# 待機後に #waitatick:api/dynamic_ex が呼ばれる
+# 待機後に #waitatick:callback/dynamic_ex が呼ばれる
 # 
-# storage waitatick: IO.data ストレージに入れたデータが待機後に同ストレージに帰ってくる
+# storage waitatick: IO ストレージに入れたデータが待機後に同ストレージに帰ってくる
 # 
 # @api
 
-function waitatick:core/dynamic_ex/main
+execute if score $tick waitatick matches 1..65536 run function waitatick:core/dynamic_ex/append

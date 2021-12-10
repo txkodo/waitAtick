@@ -1,11 +1,12 @@
 #> waitatick:api/static_ex
 # 
-# @input storage waitatick: tick 待機時間 (int)
+# @input storage waitatick: IO ストレージに待機後に使いたいデータを入れておく
 # 
-# 待機後に #waitatick:api/static_ex が呼ばれる
+# 待機後に #waitatick:callback/static_ex が呼ばれる
 # 
-# storage waitatick: IO.data ストレージに入れたデータが待機後に同ストレージに帰ってくる
+# storage waitatick: IO ストレージに入れたデータが待機後に同ストレージに帰ってくる
 # 
 # @api
 
-function waitatick:core/static_ex/main
+scoreboard players set $tick waitatick 10
+function waitatick:core/static_ex/append
