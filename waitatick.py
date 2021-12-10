@@ -4,7 +4,7 @@ import json
 import shutil
 
 path = Path(__file__).parent.absolute()
-CORE_PATH = path / r'data\waitatick\functions\core'
+CORE_PATH = path / r'data\waitatick\functions\core\_'
 API_PATH = path / r'data\waitatick\functions\api'
 TAG_PATH = path / r'data\waitatick\tags\functions\callback'
 
@@ -25,21 +25,21 @@ def waitAtickDynamic(name:str,callbacks:list[str]=[]):
   assert isinstance(name,str)
   assert re.fullmatch( '[a-z0-9_-]+' ,name)
 
-  appendFunc = f'''#> waitatick:core/{name}/append
+  appendFunc = f'''#> waitatick:core/_/{name}/append
 # @internal
 
-execute if score $tick waitatick matches 1 run function waitatick:core/{name}/append.next
-execute unless score $tick waitatick matches 1 run function waitatick:core/{name}/append.other
+execute if score $tick waitatick matches 1 run function waitatick:core/_/{name}/append.next
+execute unless score $tick waitatick matches 1 run function waitatick:core/_/{name}/append.other
 '''
 
-  appendNextFunc = f'''#> waitatick:core/{name}/append.next
+  appendNextFunc = f'''#> waitatick:core/_/{name}/append.next
 # @internal
 
 execute unless data storage waitatick: data[1].{name} run data modify storage waitatick: data[1].{name} set value []
 data modify storage waitatick: data[1].{name} append from storage waitatick: IO
 '''
 
-  appendOtherFunc = f'''#> waitatick:core/{name}/append.other
+  appendOtherFunc = f'''#> waitatick:core/_/{name}/append.other
 # @internal
 
 function waitatick:core/touch_index
@@ -47,17 +47,17 @@ execute unless data storage waitatick: _[-2][-2][-2][-2][-2][-2][-2][-2][-2][-2]
 data modify storage waitatick: _[-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2].{name} append from storage waitatick: IO
 '''
 
-  callFunc = f'''#> waitatick:core/{name}/call
+  callFunc = f'''#> waitatick:core/_/{name}/call
 # @internal
 
 data modify storage waitatick: IO set from storage waitatick: data[0].{name}[0]
 data remove storage waitatick: data[0].{name}[0]
 function #waitatick:callback/{name}
-execute if data storage waitatick: data[0].{name}[0] run function waitatick:core/{name}/call
+execute if data storage waitatick: data[0].{name}[0] run function waitatick:core/_/{name}/call
 '''
-  tickFunc = f'''#> waitatick:core/{name}/tick
+  tickFunc = f'''#> waitatick:core/_/{name}/tick
 # @internal
-execute if data storage waitatick: data[0].{name}[0] run function waitatick:core/{name}/call'''
+execute if data storage waitatick: data[0].{name}[0] run function waitatick:core/_/{name}/call'''
 
   apiFunc = f'''#> waitatick:api/{name}
 # 
@@ -70,7 +70,7 @@ execute if data storage waitatick: data[0].{name}[0] run function waitatick:core
 # 
 # @api
 
-execute if score $tick waitatick matches 1..65536 run function waitatick:core/{name}/append
+execute if score $tick waitatick matches 1..65536 run function waitatick:core/_/{name}/append
 '''
 
   tagJson = f'''{{"values": [{ ','.join(f'"{i}"' for i in callbacks)}]}}'''
@@ -86,7 +86,7 @@ execute if score $tick waitatick matches 1..65536 run function waitatick:core/{n
   (TAG_PATH / f'{name}.json').write_text(tagJson,encoding='utf8')  
   (API_PATH / f'{name}.mcfunction').write_text(apiFunc,encoding='utf8')
 
-  tickFuncs.add(f'waitatick:core/{name}/tick')
+  tickFuncs.add(f'waitatick:core/_/{name}/tick')
   INIT_TAG_PATH.write_text(json.dumps({"values":list(tickFuncs)}),encoding='utf8')
 
 def waitAtickStatic(name:str,tick:int,callbacks:list[str]=[]):
@@ -95,14 +95,14 @@ def waitAtickStatic(name:str,tick:int,callbacks:list[str]=[]):
   assert isinstance(name,str)
   assert re.fullmatch( '[a-z0-9_-]+' ,name)
 
-  appendNextFunc = f'''#> waitatick:core/{name}/append
+  appendNextFunc = f'''#> waitatick:core/_/{name}/append
 # @internal
 
 execute unless data storage waitatick: data[1].{name} run data modify storage waitatick: data[1].{name} set value []
 data modify storage waitatick: data[1].{name} append from storage waitatick: IO
 '''
 
-  appendOtherFunc = f'''#> waitatick:core/{name}/append
+  appendOtherFunc = f'''#> waitatick:core/_/{name}/append
 # @internal
 
 scoreboard players set $tick waitatick {tick}
@@ -111,17 +111,17 @@ execute unless data storage waitatick: _[-2][-2][-2][-2][-2][-2][-2][-2][-2][-2]
 data modify storage waitatick: _[-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2].{name} append from storage waitatick: IO
 '''
 
-  callFunc = f'''#> waitatick:core/{name}/call
+  callFunc = f'''#> waitatick:core/_/{name}/call
 # @internal
 
 data modify storage waitatick: IO set from storage waitatick: data[0].{name}[0]
 data remove storage waitatick: data[0].{name}[0]
 function #waitatick:callback/{name}
-execute if data storage waitatick: data[0].{name}[0] run function waitatick:core/{name}/call
+execute if data storage waitatick: data[0].{name}[0] run function waitatick:core/_/{name}/call
 '''
-  tickFunc = f'''#> waitatick:core/{name}/tick
+  tickFunc = f'''#> waitatick:core/_/{name}/tick
 # @internal
-execute if data storage waitatick: data[0].{name}[0] run function waitatick:core/{name}/call'''
+execute if data storage waitatick: data[0].{name}[0] run function waitatick:core/_/{name}/call'''
 
   apiFunc = f'''#> waitatick:api/{name}
 # 
@@ -133,7 +133,7 @@ execute if data storage waitatick: data[0].{name}[0] run function waitatick:core
 # 
 # @api
 
-function waitatick:core/{name}/append
+function waitatick:core/_/{name}/append
 '''
 
   tagJson = f'''{{"values": [{ ','.join(f'"{i}"' for i in callbacks)}]}}'''
@@ -147,5 +147,5 @@ function waitatick:core/{name}/append
   (TAG_PATH / f'{name}.json').write_text(tagJson,encoding='utf8')  
   (API_PATH / f'{name}.mcfunction').write_text(apiFunc,encoding='utf8')  
 
-  tickFuncs.add(f'waitatick:core/{name}/tick')
+  tickFuncs.add(f'waitatick:core/_/{name}/tick')
   INIT_TAG_PATH.write_text(json.dumps({"values":list(tickFuncs)}),encoding='utf8')

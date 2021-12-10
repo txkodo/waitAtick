@@ -1,4 +1,4 @@
-#> waitatick:core/dynamic_ex/append.other
+#> waitatick:core/_/dynamic_ex/append.other
 # @internal
 
 function waitatick:core/touch_index

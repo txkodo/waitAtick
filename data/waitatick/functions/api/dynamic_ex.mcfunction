@@ -9,4 +9,4 @@
 # 
 # @api
 
-execute if score $tick waitatick matches 1..65536 run function waitatick:core/dynamic_ex/append
+execute if score $tick waitatick matches 1..65536 run function waitatick:core/_/dynamic_ex/append

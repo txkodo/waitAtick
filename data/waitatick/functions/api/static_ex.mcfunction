@@ -8,4 +8,4 @@
 # 
 # @api
 
-function waitatick:core/static_ex/append
+function waitatick:core/_/static_ex/append
