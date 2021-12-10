@@ -32,21 +32,24 @@ execute unless score $tick waitatick matches 1 run function waitatick:core/_/{na
 # @internal
 
 execute unless data storage waitatick: data[1].{name} run data modify storage waitatick: data[1].{name} set value []
-data modify storage waitatick: data[1].{name} append from storage waitatick: IO
+data modify storage waitatick: data[1].{name} append value {{}}
+data modify storage waitatick: data[1].{name}[-1]._ set from storage waitatick: IO
 ''' if tick == 1 else f'''#> waitatick:core/_/{name}/append
 # @internal
 
 scoreboard players set $tick waitatick {tick}
 function waitatick:core/trie/index
 execute unless data storage waitatick: _[-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2].{name} run data modify storage waitatick: _[-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2].{name} set value []
-data modify storage waitatick: _[-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2].{name} append from storage waitatick: IO
+data modify storage waitatick: _[-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2].{name} append value {{}}
+data modify storage waitatick: _[-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2].{name}[-1]._ set from storage waitatick: IO
 '''
 
   appendNextFunc = f'''#> waitatick:core/_/{name}/append.next
 # @internal
 
 execute unless data storage waitatick: data[1].{name} run data modify storage waitatick: data[1].{name} set value []
-data modify storage waitatick: data[1].{name} append from storage waitatick: IO
+data modify storage waitatick: data[1].{name} append value {{}}
+data modify storage waitatick: data[1].{name}[-1]._ set from storage waitatick: IO
 '''
 
   appendOtherFunc = f'''#> waitatick:core/_/{name}/append.other
@@ -54,13 +57,14 @@ data modify storage waitatick: data[1].{name} append from storage waitatick: IO
 
 function waitatick:core/trie/index
 execute unless data storage waitatick: _[-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2].{name} run data modify storage waitatick: _[-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2].{name} set value []
-data modify storage waitatick: _[-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2].{name} append from storage waitatick: IO
+data modify storage waitatick: _[-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2].{name} append value {{}}
+data modify storage waitatick: _[-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2].{name}[-1]._ set from storage waitatick: IO
 '''
 
   callFunc = f'''#> waitatick:core/_/{name}/call
 # @internal
 
-data modify storage waitatick: IO set from storage waitatick: data[0].{name}[0]
+data modify storage waitatick: IO set from storage waitatick: data[0].{name}[0]._
 data remove storage waitatick: data[0].{name}[0]
 function #waitatick:callback/{name}
 execute if data storage waitatick: data[0].{name}[0] run function waitatick:core/_/{name}/call
