@@ -1,6 +1,3 @@
-# 現在のtickのデータ位置をずらす
-scoreboard players operation #current waitatick %= #65536 waitatick
-scoreboard players add #current waitatick 1
 
 # 現在のtickの位置のデータにアクセス
 scoreboard players operation #index waitatick = #current waitatick
@@ -13,3 +10,6 @@ data modify storage waitatick: _[-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2]
 # 各コールバックを呼び出す
 function #waitatick:core/tick
 
+# 現在のtickのデータ位置をずらす
+scoreboard players operation #current waitatick %= #65536 waitatick
+scoreboard players add #current waitatick 1
