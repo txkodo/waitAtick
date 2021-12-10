@@ -1,4 +1,7 @@
 
+# 実行座標アンカーを召喚
+execute unless entity cbd0197a-3299-4a12-9942-ef82cc71ecf3 run summon marker 0 0 0 {UUID:[I;-875554438,848906770,-1723666558,-864949005]}
+
 # 各コールバックを呼び出す
 function #waitatick:core/tick
 

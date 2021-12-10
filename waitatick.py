@@ -22,7 +22,31 @@ TAG_PATH.mkdir()
 shutil.rmtree(API_PATH,ignore_errors = True)
 API_PATH.mkdir()
 
-def _waitAtick(name:str,tick:Optional[int],callbacks:list[str]=[],save_executer:bool = False):
+def _waitAtick(name:str,tick:Optional[int],callbacks:list[str]=[],save_executer:bool = False,save_position:bool=False):
+
+  def setNbt(path:str):
+    result = f'''
+execute unless data storage waitatick: {path}.{name} run data modify storage waitatick: {path}.{name} set value []
+data modify storage waitatick: {path}.{name} append value {{}}'''
+    # 実行者を保存する場合実行者にIDを割り当て保存
+    if save_executer:
+      result += f'''
+execute unless score @s waitatickID matches 1.. run function waitatick:core/id/allocate
+execute store result storage waitatick: {path}.{name}[-1].as int 1 run scoreboard players get @s waitatickID
+'''
+    # 実行位置を保存
+    if save_position:
+      result += f'''
+tp cbd0197a-3299-4a12-9942-ef82cc71ecf3 ~ ~ ~
+function waitatick:custom/dimension
+data modify storage waitatick: {path}.{name}[-1].in set from storage waitatick: in
+data modify storage waitatick: {path}.{name}[-1].pos set from entity cbd0197a-3299-4a12-9942-ef82cc71ecf3 Pos
+data modify storage waitatick: {path}.{name}[-1].rot set from entity cbd0197a-3299-4a12-9942-ef82cc71ecf3 Rotation
+'''
+    result += f'''
+data modify storage waitatick: {path}.{name}[-1]._ set from storage waitatick: IO'''
+    return result
+
   appendFunc = f'''#> waitatick:core/_/{name}/append
 # @internal
 
@@ -31,42 +55,63 @@ execute unless score $tick waitatick matches 1 run function waitatick:core/_/{na
 ''' if tick is None else f'''#> waitatick:core/_/{name}/append
 # @internal
 
-execute unless data storage waitatick: data[1].{name} run data modify storage waitatick: data[1].{name} set value []
-data modify storage waitatick: data[1].{name} append value {{}}
-data modify storage waitatick: data[1].{name}[-1]._ set from storage waitatick: IO
+{setNbt("data[1]")}
 ''' if tick == 1 else f'''#> waitatick:core/_/{name}/append
 # @internal
 
 scoreboard players set $tick waitatick {tick}
 function waitatick:core/trie/index
-execute unless data storage waitatick: _[-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2].{name} run data modify storage waitatick: _[-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2].{name} set value []
-data modify storage waitatick: _[-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2].{name} append value {{}}
-data modify storage waitatick: _[-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2].{name}[-1]._ set from storage waitatick: IO
+{setNbt("_[-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2]")}
 '''
 
   appendNextFunc = f'''#> waitatick:core/_/{name}/append.next
 # @internal
 
-execute unless data storage waitatick: data[1].{name} run data modify storage waitatick: data[1].{name} set value []
-data modify storage waitatick: data[1].{name} append value {{}}
-data modify storage waitatick: data[1].{name}[-1]._ set from storage waitatick: IO
+{setNbt("data[1]")}
 '''
 
   appendOtherFunc = f'''#> waitatick:core/_/{name}/append.other
 # @internal
 
 function waitatick:core/trie/index
-execute unless data storage waitatick: _[-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2].{name} run data modify storage waitatick: _[-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2].{name} set value []
-data modify storage waitatick: _[-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2].{name} append value {{}}
-data modify storage waitatick: _[-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2].{name}[-1]._ set from storage waitatick: IO
+{setNbt("_[-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2]")}
 '''
 
   callFunc = f'''#> waitatick:core/_/{name}/call
 # @internal
 
-data modify storage waitatick: IO set from storage waitatick: data[0].{name}[0]._
+data modify storage waitatick: IO set from storage waitatick: data[0].{name}[0]._'''
+
+  if save_executer:
+    callFunc += f'''
+execute store result score #id_ waitatick run data get storage waitatick: data[0].{name}[0].as'''
+
+  if save_position:
+    callFunc += f'''
+data modify storage waitatick: in set from storage waitatick: data[0].{name}[-1].in
+function waitatick:custom/dimension_load
+data modify entity cbd0197a-3299-4a12-9942-ef82cc71ecf3 Pos set from storage waitatick: data[0].{name}[0].pos
+data modify entity cbd0197a-3299-4a12-9942-ef82cc71ecf3 Rotation set from storage waitatick: data[0].{name}[0].rot'''
+
+  if save_executer and save_position:
+    callFunc += f'''
+execute at cbd0197a-3299-4a12-9942-ef82cc71ecf3 as @e if score @s waitatickID = #id_ waitatick run function #waitatick:callback/{name}'''
+  elif save_executer:
+    callFunc += f'''
+execute as @e if score @s waitatickID = #id_ waitatick run function #waitatick:callback/{name}'''
+  elif save_position:
+    callFunc += f'''
+execute at cbd0197a-3299-4a12-9942-ef82cc71ecf3 run function #waitatick:callback/{name}'''
+  else:
+    callFunc += f'''
+function #waitatick:callback/{name}'''
+
+  if save_position:
+    callFunc += f'''
+execute in minecraft:overworld run tp cbd0197a-3299-4a12-9942-ef82cc71ecf3 0 0 0'''
+
+  callFunc += f'''
 data remove storage waitatick: data[0].{name}[0]
-function #waitatick:callback/{name}
 execute if data storage waitatick: data[0].{name}[0] run function waitatick:core/_/{name}/call
 '''
   tickFunc = f'''#> waitatick:core/_/{name}/tick
@@ -116,14 +161,14 @@ function waitatick:core/_/{name}/append
   INIT_TAG_PATH.write_text(json.dumps({"values":list(tickFuncs)}),encoding='utf8')
 
 
-def waitAtickDynamic(name:str,callbacks:list[str]=[]):
+def waitAtickDynamic(name:str,callbacks:list[str]=[],save_executer:bool = False,save_position:bool=False):
   assert isinstance(name,str)
   assert re.fullmatch( '[a-z0-9_-]+' ,name)
-  _waitAtick(name,None,callbacks)
+  _waitAtick(name,None,callbacks,save_executer,save_position)
 
-def waitAtickStatic(name:str,tick:int,callbacks:list[str]=[]):
+def waitAtickStatic(name:str,tick:int,callbacks:list[str]=[],save_executer:bool = False,save_position:bool=False):
   assert isinstance(tick,int)
   assert 1 <= tick <= 65536
   assert isinstance(name,str)
   assert re.fullmatch( '[a-z0-9_-]+' ,name)
-  _waitAtick(name,tick,callbacks)
+  _waitAtick(name,tick,callbacks,save_executer,save_position)
