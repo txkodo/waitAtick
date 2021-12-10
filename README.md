@@ -56,7 +56,7 @@ function waitatick:api/${name}
 組み込みのpythonファイルを実行することでスケジュールを増やすことができる。
 
 ```Python
-main.py
+#> main.py
 
 from waitatick import waitAtickDynamic, waitAtickStatic
 
@@ -68,3 +68,41 @@ waitAtickDynamic('dynamic_ex',["example:dynamic_callback"],False,True)
 # スケジュール名、待機時間(チック)、待機後に実行する関数のリスト、実行者を引き継ぐか、実行位置を引き継ぐかを引数に取る
 waitAtickStatic('static_ex',10,["example:static_callback"],True)
 ```
+
+## ディメンションを追加した場合
+別のデータパックによりディメンションを追加する場合、predicateの新規作成、２つのファンクション書き換えが必要です。以下を参考に行ってください。
+
+```json
+#> waitatick:deimension/{predicate名}
+{
+  "condition": "location_check",
+  "predicate": {
+    "dimension": "ディメンション名" 
+  }
+}
+```
+
+```mcfunction
+#> waitatick:custom/dimension
+
+execute if predicate waitatick:deimension/overworld run data modify storage waitatick: in set value "minecraft:overworld"
+execute if predicate waitatick:deimension/the_nether run data modify storage waitatick: in set value "minecraft:the_nether"
+execute if predicate waitatick:deimension/the_end run data modify storage waitatick: in set value "minecraft:the_end"
+execute if predicate waitatick:deimension/{predicate名} run data modify storage waitatick: in set value "ディメンション名"
+```
+
+```mcfunction
+#> waitatick:custom/dimension_load
+
+execute if data storage waitatick: {in:"minecraft:overworld"} in overworld run tp cbd0197a-3299-4a12-9942-ef82cc71ecf3 0 0 0
+execute if data storage waitatick: {in:"minecraft:the_nether"} in the_nether run tp cbd0197a-3299-4a12-9942-ef82cc71ecf3 0 0 0
+execute if data storage waitatick: {in:"minecraft:the_end"} in the_end run tp cbd0197a-3299-4a12-9942-ef82cc71ecf3 0 0 0
+execute if data storage waitatick: {in:"ディメンション名"} in ディメンション名 run tp cbd0197a-3299-4a12-9942-ef82cc71ecf3 0 0 0
+
+```
+
+### 参考データパック
+
+https://github.com/Ai-Akaishi/OhMyDat
+
+https://gist.github.com/intsuc/0901df9d487f7829d97491613a12d351
