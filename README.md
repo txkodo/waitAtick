@@ -14,7 +14,7 @@ function waitatick:api/${name}
 # 待機後に #waitatick:api/${name} が呼ばれる
 # storage waitatick: IO.data ストレージに入れたデータが待機後に同ストレージに帰ってくる
 ```
-※ ${name} はデフォルトでは dynamic_ex
+※ ${name} はデフォルトでは static_ex
 
 #### 動的schedule
 storageの値だけtickが経った後にファンクションを起動する
@@ -32,7 +32,7 @@ function waitatick:api/${name}
 # 待機後に #waitatick:api/dynamic_ex が呼ばれる
 # storage waitatick: IO.data ストレージに入れたデータが待機後に同ストレージに帰ってくる
 ```
-※ ${name} はデフォルトでは static_ex
+※ ${name} はデフォルトでは dynamic_ex
 
 ### 依存ライブラリ
 txQueue@txkodo
