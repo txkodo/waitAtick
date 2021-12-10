@@ -28,22 +28,36 @@ def waitAtickDynamic(name:str,callbacks:list[str]=[]):
   appendFunc = f'''#> waitatick:core/{name}/append
 # @internal
 
+execute if score $tick waitatick matches 1 run function waitatick:core/{name}/append.next
+execute unless score $tick waitatick matches 1 run function waitatick:core/{name}/append.other
+'''
+
+  appendNextFunc = f'''#> waitatick:core/{name}/append.next
+# @internal
+
+execute unless data storage waitatick: data[1].{name} run data modify storage waitatick: data[1].{name} set value []
+data modify storage waitatick: data[1].{name} append from storage waitatick: IO
+'''
+
+  appendOtherFunc = f'''#> waitatick:core/{name}/append.other
+# @internal
+
 function waitatick:core/touch_index
 execute unless data storage waitatick: _[-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2].{name} run data modify storage waitatick: _[-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2].{name} set value []
 data modify storage waitatick: _[-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2].{name} append from storage waitatick: IO
 '''
-  
+
   callFunc = f'''#> waitatick:core/{name}/call
 # @internal
 
-data modify storage waitatick: IO set from storage waitatick: data.{name}[0]
-data remove storage waitatick: data.{name}[0]
+data modify storage waitatick: IO set from storage waitatick: data[0].{name}[0]
+data remove storage waitatick: data[0].{name}[0]
 function #waitatick:callback/{name}
-execute if data storage waitatick: data.{name}[0] run function waitatick:core/{name}/call
+execute if data storage waitatick: data[0].{name}[0] run function waitatick:core/{name}/call
 '''
   tickFunc = f'''#> waitatick:core/{name}/tick
 # @internal
-execute if data storage waitatick: data.{name}[0] run function waitatick:core/{name}/call'''
+execute if data storage waitatick: data[0].{name}[0] run function waitatick:core/{name}/call'''
 
   apiFunc = f'''#> waitatick:api/{name}
 # 
@@ -64,6 +78,8 @@ execute if score $tick waitatick matches 1..65536 run function waitatick:core/{n
   core_path = CORE_PATH / name
   core_path.mkdir(exist_ok=True)
   (core_path / f'append.mcfunction').write_text(appendFunc,encoding='utf8')
+  (core_path / f'append.next.mcfunction').write_text(appendNextFunc,encoding='utf8')
+  (core_path / f'append.other.mcfunction').write_text(appendOtherFunc,encoding='utf8')
   (core_path / f'call.mcfunction').write_text(callFunc,encoding='utf8')
   (core_path / f'tick.mcfunction').write_text(tickFunc,encoding='utf8')
 
@@ -79,25 +95,33 @@ def waitAtickStatic(name:str,tick:int,callbacks:list[str]=[]):
   assert isinstance(name,str)
   assert re.fullmatch( '[a-z0-9_-]+' ,name)
 
-  appendFunc = f'''#> waitatick:core/{name}/append
+  appendNextFunc = f'''#> waitatick:core/{name}/append
 # @internal
 
+execute unless data storage waitatick: data[1].{name} run data modify storage waitatick: data[1].{name} set value []
+data modify storage waitatick: data[1].{name} append from storage waitatick: IO
+'''
+
+  appendOtherFunc = f'''#> waitatick:core/{name}/append
+# @internal
+
+scoreboard players set $tick waitatick {tick}
 function waitatick:core/touch_index
 execute unless data storage waitatick: _[-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2].{name} run data modify storage waitatick: _[-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2].{name} set value []
 data modify storage waitatick: _[-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2].{name} append from storage waitatick: IO
 '''
-  
+
   callFunc = f'''#> waitatick:core/{name}/call
 # @internal
 
-data modify storage waitatick: IO set from storage waitatick: data.{name}[0]
-data remove storage waitatick: data.{name}[0]
+data modify storage waitatick: IO set from storage waitatick: data[0].{name}[0]
+data remove storage waitatick: data[0].{name}[0]
 function #waitatick:callback/{name}
-execute if data storage waitatick: data.{name}[0] run function waitatick:core/{name}/call
+execute if data storage waitatick: data[0].{name}[0] run function waitatick:core/{name}/call
 '''
   tickFunc = f'''#> waitatick:core/{name}/tick
 # @internal
-execute if data storage waitatick: data.{name}[0] run function waitatick:core/{name}/call'''
+execute if data storage waitatick: data[0].{name}[0] run function waitatick:core/{name}/call'''
 
   apiFunc = f'''#> waitatick:api/{name}
 # 
@@ -109,7 +133,6 @@ execute if data storage waitatick: data.{name}[0] run function waitatick:core/{n
 # 
 # @api
 
-scoreboard players set $tick waitatick {tick}
 function waitatick:core/{name}/append
 '''
 
@@ -117,7 +140,7 @@ function waitatick:core/{name}/append
 
   core_path = CORE_PATH / name
   core_path.mkdir(exist_ok=True)
-  (core_path / f'append.mcfunction').write_text(appendFunc,encoding='utf8')
+  (core_path / f'append.mcfunction').write_text((appendNextFunc if tick == 1 else appendOtherFunc),encoding='utf8')
   (core_path / f'call.mcfunction').write_text(callFunc,encoding='utf8')
   (core_path / f'tick.mcfunction').write_text(tickFunc,encoding='utf8')
 

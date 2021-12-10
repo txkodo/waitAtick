@@ -1,15 +1,18 @@
 
-# 現在のtickの位置のデータにアクセス
-scoreboard players operation #index waitatick = #current waitatick
+# 次のtickの位置のデータにアクセス
+scoreboard players operation #index waitatick = #next waitatick
 function waitatick:core/touch
 
-# 現在のtickのデータを移動し削除
-data modify storage waitatick: data set from storage waitatick: _[-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2]
+# data[0]: 現在tickのデータ
+# data[1]: 次のtickのデータ
+data remove storage waitatick: data[0]
+data modify storage waitatick: data append from storage waitatick: _[-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2]
 data modify storage waitatick: _[-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2] set value {}
 
 # 各コールバックを呼び出す
 function #waitatick:core/tick
 
-# 現在のtickのデータ位置をずらす
-scoreboard players operation #current waitatick %= #65536 waitatick
-scoreboard players add #current waitatick 1
+# tickを1ずらす
+scoreboard players operation #current waitatick = #next waitatick
+scoreboard players operation #next waitatick %= #65536 waitatick
+scoreboard players add #next waitatick 1

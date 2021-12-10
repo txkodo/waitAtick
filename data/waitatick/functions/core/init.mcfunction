@@ -17,10 +17,11 @@ data modify storage waitatick: _[][][][][][][][][][][][][] set value [[],[]]
 data modify storage waitatick: _[][][][][][][][][][][][][][] set value [[],[]]
 data modify storage waitatick: _[][][][][][][][][][][][][][][] set value [{},{}]
 
-data modify storage waitatick: data set value {}
+data modify storage waitatick: data set value [{},{}]
 
 scoreboard objectives add waitatick dummy
 scoreboard players set #current waitatick 0
+scoreboard players set #next waitatick 1
 scoreboard players set #65536 waitatick 65536
 scoreboard players set #32768 waitatick 32768
 

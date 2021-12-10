@@ -8,5 +8,4 @@
 # 
 # @api
 
-scoreboard players set $tick waitatick 10
 function waitatick:core/static_ex/append
