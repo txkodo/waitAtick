@@ -1,4 +1,4 @@
-#> waitatick:core/_touch
+#> waitatick:core/trie/_
 # List-Mapped Trie by @intsuc
 # https://gist.github.com/intsuc/0901df9d487f7829d97491613a12d351
 # @internal

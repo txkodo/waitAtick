@@ -1,7 +1,7 @@
 
 # 次のtickの位置のデータにアクセス
 scoreboard players operation #index waitatick = #next waitatick
-function waitatick:core/touch
+function waitatick:core/trie/touch
 
 # data[0]: 現在tickのデータ
 # data[1]: 次のtickのデータ

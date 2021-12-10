@@ -42,7 +42,7 @@ data modify storage waitatick: data[1].{name} append from storage waitatick: IO
   appendOtherFunc = f'''#> waitatick:core/_/{name}/append.other
 # @internal
 
-function waitatick:core/touch_index
+function waitatick:core/trie/index
 execute unless data storage waitatick: _[-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2].{name} run data modify storage waitatick: _[-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2].{name} set value []
 data modify storage waitatick: _[-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2].{name} append from storage waitatick: IO
 '''
@@ -106,7 +106,7 @@ data modify storage waitatick: data[1].{name} append from storage waitatick: IO
 # @internal
 
 scoreboard players set $tick waitatick {tick}
-function waitatick:core/touch_index
+function waitatick:core/trie/index
 execute unless data storage waitatick: _[-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2].{name} run data modify storage waitatick: _[-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2].{name} set value []
 data modify storage waitatick: _[-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2][-2].{name} append from storage waitatick: IO
 '''
