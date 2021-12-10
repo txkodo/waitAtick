@@ -11,7 +11,7 @@ data modify storage waitatick: IO set value {foo:bar}
 # ファンクションを実行
 function waitatick:api/${name}
 
-# 待機後に #waitatick:api/${name} が呼ばれる
+# 待機後に #waitatick:callback/${name} が呼ばれる
 # storage waitatick: IO ストレージに入れたデータが待機後に同ストレージに帰ってくる
 ```
 ※ ${name} はデフォルトでは static_ex
@@ -29,7 +29,7 @@ scoreboard players set $tick waitatick 30
 # ファンクションを実行
 function waitatick:api/${name}
 
-# 待機後に #waitatick:api/${name} が呼ばれる
+# 待機後に #waitatick:callback/${name} が呼ばれる
 # storage waitatick: IO ストレージに入れたデータが待機後に同ストレージに帰ってくる
 ```
 ※ ${name} はデフォルトでは dynamic_ex
