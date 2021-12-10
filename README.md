@@ -1,6 +1,7 @@
 # waitAtick
-schedule後にstorageのデータを持ち越せる、動的scheduleデータパックライブラリ
-schedule後も実行者・実行位置schedule後も実行位置が変わらないようにもできる
+schedule後にstorageのデータを持ち越せる、動的scheduleデータパックライブラリ。
+
+schedule後も実行者・実行位置を引き継ぐことができる
 
 ### example
 2つの例が同梱されている
@@ -70,7 +71,7 @@ waitAtickStatic('static_ex',10,["example:static_callback"],True)
 ```
 
 ## ディメンションを追加した場合
-別のデータパックによりディメンションを追加する場合、predicateの新規作成、２つのファンクション書き換えが必要です。以下を参考に行ってください。
+別のデータパックによりディメンションを追加する場合、predicateの新規作成、２つのファンクション書き換えが必要となる。
 
 ```json
 #> waitatick:deimension/{predicate名}
